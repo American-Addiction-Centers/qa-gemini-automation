@@ -1,0 +1,26 @@
+{
+  "name": "qa-gemini-automation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anthony-baker87/qa-gemini-automation.git"
+  },
+  "author": "AAC QA",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anthony-baker87/qa-gemini-automation/issues"
+  },
+  "homepage": "https://github.com/anthony-baker87/qa-gemini-automation#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.12.0",
+    "@slack/web-api": "^7.0.4",
+    "@slack/webhook": "^7.0.2",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5"
+  }
+}
