@@ -21,6 +21,8 @@
     "@slack/web-api": "^7.0.4",
     "@slack/webhook": "^7.0.2",
     "axios": "^1.7.2",
-    "dotenv": "^16.4.5"
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.4.5",
+    "fast-csv": "^5.0.1"
   }
 }
