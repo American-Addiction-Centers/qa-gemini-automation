@@ -37,8 +37,8 @@ async function run() {
         results.push({question: question.questions, answer: text});
     }
 
-    // writeresultsToCSV(results);
-    writeResultsToText(results);
+    writeresultsToCSV(results);
+    // writeResultsToText(results);
 }
 
 function writeresultsToCSV(results) {
@@ -77,7 +77,7 @@ const postToSlack = () => {
     const slackProps = {
         slack_bot_api_token: process.env.SLACK_BOT_API_TOKEN,
         filePath: path.join(__dirname, 'data', 'output.txt'),
-        channel: 'qa-automation',
+        channel: 'qa-ai-automation',
         comment: 'Gemini Question & Answer Automation Report:',
         file_name: 'output.txt',
     };
