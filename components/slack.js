@@ -7,70 +7,34 @@ class SlackClient {
      * Sends a particular message to a specified Slack channel
      *
      * @async
-     * @param {String} slack_channel_webhook: your webhook for a particular slack channel
-     * @param {String} message: your message to be displayed in slack
+     * @param {Object} slackObject: Object containing slack channel webhook and attachments
      */
     async sendSlackMessage(slackObject) {
-        const {slack_channel_webhook, message} = slackObject;
+        const {
+            slack_channel_webhook,
+            slack_channel_name,
+            attachments,
+            filePath,
+            slack_bot_api_token,
+        } = slackObject;
         const webhook = new IncomingWebhook(slack_channel_webhook);
+        const client = new WebClient(slack_bot_api_token);
         try {
-            const attachments = [
-                {
-                    fallback: 'Attachment',
-                    color: '#FFFFFF',
-                    blocks: [
-                        {
-                            type: 'section',
-                            text: {
-                                type: 'mrkdwn',
-                                text: message,
-                            },
-                        },
-                        {
-                            type: 'divider',
-                        },
-                    ],
-                },
-            ];
-
-            // Send the message with blocks to the specified channel using the IncomingWebhook
             await webhook.send({
-                channel: slackObject.slack_channel_name,
-                attachments: attachments,
+                text: 'Gemini Question & Answer Automation Report:',
+                attachments: attachments, // Send the attachments payload
             });
 
             console.log('Message sent successfully');
-        } catch (error) {
-            console.error(`Error sending message: ${error}`);
-        }
-    }
 
-    /**
-     * Sends a file to a particular channel in Slack
-     *
-     * @async
-     * @param {String} slack_bot_api_token: your token string for slack
-     * @param {String} filePath: location of your file
-     * @param {String} channel: the channel you want the file to be posted to
-     * @param {String} comment: your comment to be displayed in slack
-     * @param {String} file_name: name of your file e.g. "output.csv"
-     */
-    async postFile(props) {
-        const {slack_bot_api_token, filePath, channel, comment, file_name} = props;
-        try {
-            const client = new WebClient(slack_bot_api_token);
-
-            // Read the file content
+            //posts logs.txt to slack
             const fileContent = fs.readFileSync(filePath);
-
-            // Post the file to Slack
             const result = await client.files.upload({
-                channels: channel,
-                initial_comment: comment,
-                title: file_name,
+                channels: slack_channel_name,
+                title: 'Results CSV',
                 file: fileContent,
                 filetype: 'auto',
-                filename: file_name,
+                filename: 'output.csv',
             });
 
             console.log(result);

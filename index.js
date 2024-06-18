@@ -74,13 +74,61 @@ const writeResultsToText = () => {
 };
 
 const postToSlack = () => {
+    let myMessage = formatResultsForSlack(results);
+
     const slackProps = {
         slack_bot_api_token: process.env.SLACK_BOT_API_TOKEN,
-        filePath: path.join(__dirname, 'data', 'output.txt'),
-        channel: 'qa-ai-automation',
-        comment: 'Gemini Question & Answer Automation Report:',
-        file_name: 'output.txt',
+        slack_channel_webhook: process.env.SLACK_QA_AI_AUTOMATION,
+        slack_channel_name: 'qa-ai-automation',
+        filePath: path.join(__dirname, 'data', 'output.csv'),
+        attachments: myMessage,
     };
+
     const sc = new Slack();
-    sc.postFile(slackProps);
+    sc.sendSlackMessage(slackProps);
+};
+
+const formatResultsForSlack = (results) => {
+    let attachments = [];
+    results.forEach((result) => {
+        attachments.push(
+            {
+                fallback: 'Question Attachment',
+                color: '#FF0000', // Red color for questions
+                blocks: [
+                    {
+                        type: 'section',
+                        text: {
+                            type: 'mrkdwn',
+                            text: `*Question:* ${result.question}`,
+                        },
+                    },
+                    {
+                        type: 'divider',
+                    },
+                ],
+            },
+            {
+                fallback: 'Answer Attachment',
+                color: '#00FF00', // Green color for answers
+                blocks: [
+                    {
+                        type: 'section',
+                        text: {
+                            type: 'mrkdwn',
+                            text: `*Answer:* ${result.answer}`,
+                        },
+                    },
+                    {
+                        type: 'section',
+                        text: {
+                            type: 'mrkdwn',
+                            text: '──────────────────────────────────────────────────────────────────────────────────────────────────────', // Visual divider
+                        },
+                    },
+                ],
+            },
+        );
+    });
+    return attachments;
 };
