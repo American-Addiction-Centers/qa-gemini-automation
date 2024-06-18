@@ -30,7 +30,9 @@ async function run() {
     const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
 
     for (const question of questions) {
-        const result = await model.generateContent(question.questions);
+        const result = await model.generateContent(question.questions, {
+            temperature: 0.7,
+        });
         const response = await result.response;
         const text = response.text();
         console.log(text);
