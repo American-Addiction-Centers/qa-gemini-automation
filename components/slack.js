@@ -1,6 +1,7 @@
 const {WebClient} = require('@slack/web-api');
 const {IncomingWebhook} = require('@slack/webhook');
 const fs = require('fs');
+const axios = require('axios');
 
 class SlackClient {
     /**
@@ -15,6 +16,7 @@ class SlackClient {
             slack_channel_name,
             attachments,
             filePath,
+            fileName,
             slack_bot_api_token,
         } = slackObject;
         const webhook = new IncomingWebhook(slack_channel_webhook);
@@ -29,12 +31,26 @@ class SlackClient {
 
             //posts logs.txt to slack
             const fileContent = fs.readFileSync(filePath);
-            const result = await client.files.upload({
-                channels: slack_channel_name,
-                title: 'Results CSV',
-                file: fileContent,
-                filetype: 'auto',
-                filename: 'output.csv',
+            const externalUrlResponse = await client.files.getUploadURLExternal({
+                token: process.env.SLACK_BOT_API_TOKEN,
+                filename: fileName,
+                length: fileContent.length,
+            });
+
+            const uploadUrl = externalUrlResponse.upload_url;
+            const fileId = externalUrlResponse.file_id;
+
+            await axios.post(uploadUrl, fileContent, {
+                headers: {
+                    'Content-Type': 'application/octet-stream',
+                },
+            });
+
+            const result = await client.files.completeUploadExternal({
+                token: process.env.SLACK_BOT_API_TOKEN,
+                files: [{"id": fileId, "title": "Results CSV:"}],
+                channel_id: "C075PQP4BM4",
+                initial_comment: 'Results CSV:',
             });
 
             console.log(result);

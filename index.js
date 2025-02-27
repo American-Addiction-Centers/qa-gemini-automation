@@ -83,6 +83,7 @@ const postToSlack = () => {
         slack_channel_webhook: process.env.SLACK_QA_AI_AUTOMATION,
         slack_channel_name: 'qa-ai-automation',
         filePath: path.join(__dirname, 'data', 'output.csv'),
+        fileName: 'output.csv',
         attachments: myMessage,
     };
 
